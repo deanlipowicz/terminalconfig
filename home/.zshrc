@@ -1,0 +1,195 @@
+# ──────────────────────────────────────────────
+#  ZSH Configuration — Oh My Zsh + Powerlevel10k
+# ──────────────────────────────────────────────
+
+# -------- Instant Prompt (must be first) --------
+# Powerlevel10k instant prompt: must be at the very top
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# -------- Path to Oh My Zsh --------
+export ZSH="$HOME/.oh-my-zsh"
+
+# -------- Theme: Powerlevel10k --------
+ZSH_THEME="powerlevel10k/powerlevel10k"
+# Use Nerd Font icons (JetBrainsMono Nerd Font installed locally)
+POWERLEVEL9K_MODE="nerdfont-complete"
+
+# -------- Plugin Configuration --------
+# zsh-syntax-highlighting must be LAST in the plugins list
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# -------- Powerlevel10k Configuration --------
+# To reconfigure: p10k configure
+[[ ! -f "$HOME/.p10k.zsh" ]] || source "$HOME/.p10k.zsh"
+
+# -------- PATH --------
+# Append critical paths (no duplicates)
+typeset -U path
+path=(
+  "$HOME/bin"
+  "$HOME/.cargo/bin"
+  "$HOME/.local/share/pi-node/current/bin"
+  "$HOME/.local/share/pi-node/node-v22.23.0-linux-x64/bin"
+  "$HOME/.pi/bin"
+  "$HOME/.local/bin"
+  $path
+)
+
+# -------- Environment Variables --------
+export EDITOR="nvim"
+export VISUAL="nvim"
+export CMDSTAN_HOME="$HOME/.cmdstan/cmdstan-2.39.0"
+export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git 2>/dev/null || find . -type f'
+export HIP_VISIBLE_DEVICES="0"
+export HSA_OVERRIDE_GFX_VERSION="11.0.0"
+export HIP_FORCE_DEV_KERNARG="1"
+
+# -------- History Settings --------
+HISTSIZE=50000
+SAVEHIST=50000
+HISTFILE="$HOME/.zsh_history"
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
+
+# -------- Completion --------
+autoload -Uz compinit && compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# -------- Apt: auto-sudo, and update upgrades everything --------
+# `apt update`      → apt + cargo + rustup + pipx + uv + gh updates
+# `apt install foo` → sudo apt install foo
+# `sudo apt update` → normal apt update only (escape hatch)
+apt() {
+  if [[ "$*" == "update" ]]; then
+    # ── System packages ──
+    command sudo apt update && command sudo apt upgrade -y
+
+    # ── Cargo crates ──
+    if command -v cargo-install-update &>/dev/null; then
+      echo ""
+      echo "── Updating Cargo packages ──"
+      cargo install-update -a
+    fi
+
+    # ── Rust toolchain ──
+    if command -v rustup &>/dev/null; then
+      echo ""
+      echo "── Updating Rust toolchain ──"
+      rustup update
+    fi
+
+    # ── pipx packages (Python tools) ──
+    if command -v pipx &>/dev/null; then
+      echo ""
+      echo "── Updating pipx packages ──"
+      pipx upgrade-all
+    fi
+
+    # ── uv tools (Python tools) ──
+    if command -v uv &>/dev/null; then
+      echo ""
+      echo "── Updating uv tools ──"
+      uv tool upgrade --all 2>/dev/null || uv tool upgrade --all
+    fi
+
+    # ── GitHub CLI extensions ──
+    if command -v gh &>/dev/null; then
+      echo ""
+      echo "── Updating GitHub CLI extensions ──"
+      gh extension upgrade --all 2>/dev/null || true
+    fi
+
+    echo ""
+    echo "✓ All updates complete"
+  else
+    command sudo apt "$@"
+  fi
+}
+
+# -------- Aliases (transferred from bash/fish) --------
+# Listing
+alias ll='eza -l --icons --git'
+alias la='eza -la --icons --git'
+alias l='eza --icons'
+alias ls='eza --icons'
+alias tree='eza --tree --icons'
+
+# Core utils
+alias rg='/usr/bin/rg'
+alias fd='fdfind'
+
+# Custom
+alias ocr='systemctl --user start nanonets-ocr-drop.service'
+
+# Orchard R REPL (function shadows zsh's built-in `r`)
+r() { orchard "$@"; }
+
+# Notification
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Config shortcuts
+alias zshrc='$EDITOR ~/.zshrc'
+alias zshconfig='$EDITOR ~/.zshrc'
+alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
+
+# -------- Zoxide (smart cd) --------
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+
+# -------- FZF Key Bindings --------
+if [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+  source /usr/share/doc/fzf/examples/key-bindings.zsh
+elif [[ -f /usr/share/fzf/key-bindings.zsh ]]; then
+  source /usr/share/fzf/key-bindings.zsh
+fi
+
+# -------- FZF Completion --------
+if [[ -f /usr/share/doc/fzf/examples/completion.zsh ]]; then
+  source /usr/share/doc/fzf/examples/completion.zsh
+elif [[ -f /usr/share/fzf/completion.zsh ]]; then
+  source /usr/share/fzf/completion.zsh
+fi
+
+# -----── Bat (cat replacement) --------
+# bat is installed as 'batcat' on Ubuntu; alias for syntax-highlighted cat
+alias cat='bat --paging=never'
+
+# -----── lazygit (TUI git client) --------
+alias lg='lazygit'
+
+# -----── tldr (simplified man pages) --------
+# Cache the pages on first load if missing
+if [[ ! -d "${XDG_CACHE_HOME:-$HOME/.cache}/tealdeer" ]]; then
+  tldr --update &>/dev/null &
+fi
+
+# -----── Tmux --------
+# Quick session attach or create
+alias tm='tmux new-session -A -s "$(basename "$(pwd)")" 2>/dev/null || tmux new-session -A -s main'
+
+# -----── Git delta (diff pager) --------
+# Configured in ~/.gitconfig
+
+# -----── Source cargo env --------
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# opencode
+export PATH=/home/workstation/.opencode/bin:$PATH

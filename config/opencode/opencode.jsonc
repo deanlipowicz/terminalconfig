@@ -1,0 +1,193 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "share": "disabled",
+  "shell": "/usr/bin/zsh",
+  "instructions": [
+    "/home/workstation/.config/opencode/token-discipline.md",
+    "/home/workstation/.config/opencode/stop-slop.md",
+    "/home/workstation/.config/opencode/shell-policy.md",
+    "/home/workstation/.config/opencode/rust-policy.md"
+  ],
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git#v6.0.3"
+  ],
+  "references": {
+    "terminal-apps": {
+      "path": "/home/workstation/terminal-applications",
+      "description": "Documented terminal applications, shell configuration, and workflows — eza, bat, fd, ripgrep, lazygit, tmux, zoxide, neovim, micro, duckdb, jq, yq, etc. Use for tool usage patterns and aliases."
+    }
+  },
+  "lsp": {
+    "rust-analyzer": {
+      "command": ["rust-analyzer"],
+      "extensions": ["rs"],
+      "initialization": {
+        "checkOnSave": {
+          "command": "clippy"
+        }
+      }
+    },
+    "clangd": {
+      "command": ["clangd"],
+      "extensions": ["c", "h", "cpp", "hpp", "cc", "hh", "cxx", "hxx", "c++", "h++"]
+    },
+    "lua-language-server": {
+      "command": ["lua-language-server"],
+      "extensions": ["lua"]
+    },
+    "bash-language-server": {
+      "command": ["bash-language-server"],
+      "extensions": ["sh", "bash"]
+    },
+    "pyright": {
+      "command": ["pyright"],
+      "extensions": ["py"]
+    },
+    "sqls": {
+      "command": ["sqls"],
+      "extensions": ["sql"]
+    },
+    "marksman": {
+      "command": ["marksman"],
+      "extensions": ["md", "markdown"]
+    },
+    "vscode-json-language-server": {
+      "command": ["vscode-json-language-server", "--stdio"],
+      "extensions": ["json", "jsonc"]
+    },
+    "yaml-language-server": {
+      "command": ["yaml-language-server", "--stdio"],
+      "extensions": ["yaml", "yml"]
+    }
+  },
+  "default_agent": "superpowers-plan",
+  "tool_output": {
+    "max_lines": 120,
+    "max_bytes": 12000
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "tail_turns": 4,
+    "preserve_recent_tokens": 12000,
+    "reserved": 4000
+  },
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "node_modules/**",
+      ".cache/**",
+      ".artifacts/**",
+      ".local/**",
+      ".venv/**",
+      "venv/**",
+      "dist/**",
+      "build/**",
+      "target/**",
+      "coverage/**",
+      ".pytest_cache/**",
+      ".quarto/**",
+      ".ipynb_checkpoints/**",
+      "R/x86_64-pc-linux-gnu-library/**",
+      "**/R/x86_64-pc-linux-gnu-library/**",
+      "**/*.log",
+      "**/*.lock",
+      "**/package-lock.json",
+      "**/yarn.lock",
+      "**/pnpm-lock.yaml",
+      "**/Cargo.lock",
+      "**/*.parquet",
+      "**/*.duckdb",
+      "**/*.sqlite",
+      "**/*.sqlite3",
+      "**/*.rds",
+      "**/*.RData",
+      "**/*.csv",
+      "**/*.tsv",
+      "**/*.jsonl"
+    ]
+  },
+  "permission": {
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "lsp": "allow",
+    "question": "allow",
+    "todowrite": "allow",
+    "webfetch": "ask",
+    "websearch": "ask",
+    "external_directory": "ask",
+    "doom_loop": "ask",
+    "edit": "ask",
+    "bash": {
+      "rg *": "allow",
+      "sed -n *": "allow",
+      "tail -n *": "allow",
+      "git diff*": "allow",
+      "git status*": "allow",
+      "git show*": "allow",
+      "find *": "ask",
+      "cat *": "ask",
+      "journalctl *": "ask",
+      "curl *": "ask",
+      "wget *": "ask",
+      "*": "ask"
+    }
+  },
+  "agent": {
+    "superpowers-plan": {
+      "mode": "primary",
+      "description": "Default Superpowers planning agent with bounded inspection, token discipline, and direct prose.",
+      "temperature": 0.1,
+      "maxSteps": 10,
+      "prompt": "Use the Superpowers workflow as the default planning behavior. Follow using-superpowers, brainstorming, writing-plans, executing-plans, and related Superpowers skills when applicable. User instructions and project instructions remain highest priority. Preserve token discipline: inspect narrowly, prefer rg, sed -n, tail -n, git diff, and focused excerpts, avoid whole-file or whole-log reads, cite paths and line numbers, and keep responses compact unless the user asks for detail. Write user-facing prose in English by default; internal reasoning may use any language, and quoted source text, code, identifiers, citations, mathematical notation, user-provided non-English text, or an explicit user request may use another language. For user-facing prose, apply stop-slop defaults: start with the point, cut filler and formulaic phrasing, prefer active voice and specific claims, avoid em dashes, and preserve precise technical caveats when needed.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "lsp": "allow",
+        "question": "allow",
+        "todowrite": "allow",
+        "webfetch": "ask",
+        "websearch": "ask",
+        "external_directory": "ask",
+        "doom_loop": "ask",
+        "edit": "ask",
+        "bash": {
+          "rg *": "allow",
+          "sed -n *": "allow",
+          "tail -n *": "allow",
+          "git diff*": "allow",
+          "git status*": "allow",
+          "git show*": "allow",
+          "find *": "ask",
+          "cat *": "ask",
+          "journalctl *": "ask",
+          "curl *": "ask",
+          "wget *": "ask",
+          "*": "ask"
+        }
+      }
+    },
+    "docs-scout": {
+      "mode": "subagent",
+      "description": "Find and summarize official documentation with compact citations and no workspace edits.",
+      "temperature": 0.1,
+      "maxSteps": 8,
+      "prompt": "Use official documentation where possible. Return compact findings with links and only the details needed for the current decision. Do not edit files.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "webfetch": "ask",
+        "websearch": "ask",
+        "external_directory": "ask",
+        "edit": "deny",
+        "bash": "ask"
+      }
+    }
+  }
+}

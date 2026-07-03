@@ -1,0 +1,10 @@
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	syntax-theme = gruvbox-dark
+	light = false
+[merge]
+	conflictstyle = zdiff3

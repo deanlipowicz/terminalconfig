@@ -1,0 +1,10 @@
+theme = "catppuccin-mocha"
+keymap = "vi"
+default_profile = "arrow"
+
+[profiles.arrow]
+adapter = "duckdb"
+conn_str = ["shared.duckdb"]
+read_only = true
+init_path = "~/.harlequin-init.sql"
+extension = ["parquet", "json", "httpfs"]
