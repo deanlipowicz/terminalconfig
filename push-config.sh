@@ -37,15 +37,32 @@ echo "  • .tmux.conf";              cp ~/.tmux.conf "$REPO_ROOT/home/.tmux.con
 echo "  • .gitconfig";              cp ~/.gitconfig "$REPO_ROOT/home/.gitconfig"
 echo "  • .p10k.zsh (→ .p10k.zsh.tmpl)"; cp ~/.p10k.zsh "$REPO_ROOT/home/.p10k.zsh.tmpl"
 
-# ── 2. Warn about untemplated machine-specific values ──
-HOME_ESC="${HOME//\//\\/}"
-UNTEMPLATED=$(grep -lRn "$HOME_ESC" "$REPO_ROOT/home/" "$REPO_ROOT/config/" 2>/dev/null || true)
-if [ -n "$UNTEMPLATED" ]; then
-  echo ""
-  echo "  ${YELLOW:-}⚠ WARNING: These files still contain raw \$HOME paths:${RESET:-}"
-  echo "$UNTEMPLATED" | sed "s|$REPO_ROOT/||" | sed 's/^/       /'
-  echo "  Open them and replace new machine-specific values with {{VAR}} placeholders."
+# ── 2. Re-template machine-specific values ──
+# Convert known local paths back to {{VAR}} placeholders so the repo stays portable.
+
+# .zshrc.tmpl
+sed -i \
+  -e "s|CMDSTAN_HOME=\"$HOME/\.cmdstan/cmdstan-2\.[0-9.]*\"|CMDSTAN_HOME=\"{{CMDSTAN_HOME}}\"|" \
+  -e "s|HIP_VISIBLE_DEVICES=\"[0-9]*\"|HIP_VISIBLE_DEVICES=\"{{HIP_VISIBLE_DEVICES}}\"|" \
+  -e "s|HSA_OVERRIDE_GFX_VERSION=\"[0-9.]*\"|HSA_OVERRIDE_GFX_VERSION=\"{{HSA_OVERRIDE_GFX_VERSION}}\"|" \
+  -e "s|HIP_FORCE_DEV_KERNARG=\"[0-9]*\"|HIP_FORCE_DEV_KERNARG=\"{{HIP_FORCE_DEV_KERNARG}}\"|" \
+  -e "s|$HOME/\.opencode/bin|{{OPENCODE_PATH}}|g" \
+  "$REPO_ROOT/home/.zshrc.tmpl" 2>/dev/null || true
+# Ensure template header exists
+if ! head -1 "$REPO_ROOT/home/.zshrc.tmpl" | grep -q "Template variables"; then
+  sed -i '1i# Template variables:\n#   CMDSTAN_HOME  path to CmdStan (default: $HOME/.cmdstan/cmdstan-2.39.0)\n#   HIP_VISIBLE_DEVICES  GPU devices for HIP (default: 0)\n#   HSA_OVERRIDE_GFX_VERSION  GFX version override (default: 11.0.0)\n#   HIP_FORCE_DEV_KERNARG  force kernel args (default: 1)\n#   OPENCODE_PATH  path to opencode binary dir (default: $HOME/.opencode/bin)\n' "$REPO_ROOT/home/.zshrc.tmpl"
 fi
+
+# options.lua
+sed -i \
+  "s|python3_host_prog = \"/.*\"|python3_host_prog = \"{{PYTHON_HOST_PROG}}\"|" \
+  "$REPO_ROOT/config/nvim/lua/config/options.lua" 2>/dev/null || true
+
+# opencode.jsonc — instruction paths
+sed -i \
+  -e "s|\"$HOME/\.config/opencode/|\"{{OPENCODE_CONFIG_DIR}}/|g" \
+  -e "s|\"$HOME/terminal-applications\"|\"{{TERMINAL_APPLICATIONS_PATH}}\"|" \
+  "$REPO_ROOT/config/opencode/opencode.jsonc" 2>/dev/null || true
 
 # ── 3. Commit ──
 TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
