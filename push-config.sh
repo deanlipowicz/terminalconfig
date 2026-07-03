@@ -36,6 +36,20 @@ cp ~/.config/yazi/theme.toml      "$REPO_ROOT/config/yazi/theme.toml"
 cp ~/.config/yazi/init.lua        "$REPO_ROOT/config/yazi/init.lua"
 cp ~/.config/yazi/package.toml    "$REPO_ROOT/config/yazi/package.toml"
 
+echo "  • Bat"
+mkdir -p "$REPO_ROOT/config/bat/themes"
+cp ~/.config/bat/config "$REPO_ROOT/config/bat/config"
+cp ~/.config/bat/themes/Catppuccin\ Mocha.tmTheme "$REPO_ROOT/config/bat/themes/Catppuccin Mocha.tmTheme"
+
+echo "  • Fastfetch"
+mkdir -p "$REPO_ROOT/config/fastfetch/presets"
+cp ~/.config/fastfetch/presets/catppuccin-mocha.jsonc "$REPO_ROOT/config/fastfetch/presets/catppuccin-mocha.jsonc"
+
+echo "  • Btop"
+mkdir -p "$REPO_ROOT/config/btop/themes"
+cp ~/.config/btop/btop.conf "$REPO_ROOT/config/btop/btop.conf"
+cp ~/.config/btop/themes/catppuccin_mocha.theme "$REPO_ROOT/config/btop/themes/catppuccin_mocha.theme"
+
 echo "  • .zshrc (→ .zshrc.tmpl)"
 cp ~/.zshrc "$REPO_ROOT/home/.zshrc.tmpl"
 

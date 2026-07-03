@@ -4,7 +4,7 @@
 	diffFilter = delta --color-only
 [delta]
 	navigate = true
-	syntax-theme = gruvbox-dark
+	syntax-theme = catppuccin-mocha
 	light = false
 [merge]
 	conflictstyle = zdiff3

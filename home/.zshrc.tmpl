@@ -55,6 +55,7 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 export CMDSTAN_HOME="{{CMDSTAN_HOME}}"
 export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git 2>/dev/null || find . -type f'
+export FZF_DEFAULT_OPTS="--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8,fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc,marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
 export HIP_VISIBLE_DEVICES="{{HIP_VISIBLE_DEVICES}}"
 export HSA_OVERRIDE_GFX_VERSION="{{HSA_OVERRIDE_GFX_VERSION}}"
 export HIP_FORCE_DEV_KERNARG="{{HIP_FORCE_DEV_KERNARG}}"
@@ -253,5 +254,10 @@ alias tm='tmux new-session -A -s "$(basename "$(pwd)")" 2>/dev/null || tmux new-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Fastfetch on fresh terminal (not in tmux, skip slow on first run)
+if [[ -z "$TMUX" ]] && command -v fastfetch &>/dev/null; then
+  fastfetch --preset catppuccin-mocha 2>/dev/null
+fi
+
 # opencode
-export PATH=/home/workstation/.opencode/bin:$PATH
+export PATH={{OPENCODE_PATH}}:$PATH
