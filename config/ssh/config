@@ -1,0 +1,9 @@
+# SSH client config — managed by terminalconfig
+# Edit local ~/.ssh/config and sync back via push-config.sh
+#
+Host *
+    IdentityFile ~/.ssh/id_ed25519
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ForwardAgent yes

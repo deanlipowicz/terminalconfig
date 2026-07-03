@@ -62,6 +62,7 @@ echo "  • .zshrc (→ .zshrc.tmpl)"
 cp ~/.zshrc "$REPO_ROOT/home/.zshrc.tmpl"
 
 echo "  • .tmux.conf";              cp ~/.tmux.conf "$REPO_ROOT/home/.tmux.conf"
+echo "  • SSH config";              cp ~/.ssh/config "$REPO_ROOT/config/ssh/config"
 echo "  • .gitconfig";              cp ~/.gitconfig "$REPO_ROOT/home/.gitconfig"
 echo "  • .p10k.zsh (→ .p10k.zsh.tmpl)"; cp ~/.p10k.zsh "$REPO_ROOT/home/.p10k.zsh.tmpl"
 
