@@ -1,3 +1,10 @@
+# Template variables:
+#   CMDSTAN_HOME  path to CmdStan (default: $HOME/.cmdstan/cmdstan-2.39.0)
+#   HIP_VISIBLE_DEVICES  GPU devices for HIP (default: 0)
+#   HSA_OVERRIDE_GFX_VERSION  GFX version override (default: 11.0.0)
+#   HIP_FORCE_DEV_KERNARG  force kernel args (default: 1)
+#   OPENCODE_PATH  path to opencode binary dir (default: $HOME/.opencode/bin)
+
 # ──────────────────────────────────────────────
 #  ZSH Configuration — Oh My Zsh + Powerlevel10k
 # ──────────────────────────────────────────────
@@ -48,9 +55,13 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 export CMDSTAN_HOME="$HOME/.cmdstan/cmdstan-2.39.0"
 export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git 2>/dev/null || find . -type f'
-export HIP_VISIBLE_DEVICES="0"
-export HSA_OVERRIDE_GFX_VERSION="11.0.0"
-export HIP_FORCE_DEV_KERNARG="1"
+export HIP_VISIBLE_DEVICES="{{HIP_VISIBLE_DEVICES}}"
+export HSA_OVERRIDE_GFX_VERSION="{{HSA_OVERRIDE_GFX_VERSION}}"
+export HIP_FORCE_DEV_KERNARG="{{HIP_FORCE_DEV_KERNARG}}"
+
+# -------- Options --------
+setopt AUTO_CD                     # type dir name to cd into it
+setopt EXTENDED_GLOB               # #, ~, ^ in globs
 
 # -------- History Settings --------
 HISTSIZE=50000
@@ -64,10 +75,24 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 setopt HIST_VERIFY
 
+# FZF history search (replaces Ctrl+R)
+fzf-history-search() {
+  local selected=$(history -n 0 | fzf --tac --query="$BUFFER" --height=40%)
+  if [ -n "$selected" ]; then
+    BUFFER="$selected"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N fzf-history-search
+bindkey '^r' fzf-history-search
+
 # -------- Completion --------
 autoload -Uz compinit && compinit
 zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' keep-prefix true
+zstyle ':completion:*' recent-dirs-insert both
 
 # -------- Apt: auto-sudo, and update upgrades everything --------
 # `apt update`      → apt + cargo + rustup + pipx + uv + gh updates
@@ -141,14 +166,51 @@ r() { orchard "$@"; }
 # Notification
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+# Suffix aliases — open files by typing their name
+alias -s {md,txt,qmd,R,py,lua,json,toml,yaml,yml}=$EDITOR
+
+# OpenCode
+alias oc='opencode'
+
 # Config shortcuts
 alias zshrc='$EDITOR ~/.zshrc'
 alias zshconfig='$EDITOR ~/.zshrc'
 alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 
+# -----── Extract Any Archive --------
+extract() {
+  case "$1" in
+    *.tar.gz|*.tgz) tar xzf "$1" ;;
+    *.tar.xz)       tar xJf "$1" ;;
+    *.tar.bz2)      tar xjf "$1" ;;
+    *.zip)          unzip "$1" ;;
+    *.rar)          unrar x "$1" ;;
+    *.7z)           7z x "$1" ;;
+    *)              echo "Unknown archive: $1" ;;
+  esac
+}
+
+# -----── Magic Enter — show something useful on empty prompt --------
+magic-enter() {
+  if [[ -z "$BUFFER" ]]; then
+    if git rev-parse --is-inside-work-tree 2>/dev/null; then
+      git status -sb
+    else
+      eza --icons
+    fi
+    zle reset-prompt
+  else
+    zle accept-line
+  fi
+}
+zle -N magic-enter
+bindkey -M emacs "^M" magic-enter
+bindkey -M viins "^M" magic-enter
+
 # -------- Zoxide (smart cd) --------
 if command -v zoxide &>/dev/null; then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init zsh --cmd j)"
+  alias zi='zoxide query -i'   # interactive fzf picker
 fi
 
 # -------- FZF Key Bindings --------
@@ -192,4 +254,4 @@ alias tm='tmux new-session -A -s "$(basename "$(pwd)")" 2>/dev/null || tmux new-
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # opencode
-export PATH=/home/workstation/.opencode/bin:$PATH
+export PATH={{OPENCODE_PATH}}:$PATH
