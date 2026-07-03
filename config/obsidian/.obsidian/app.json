@@ -1,0 +1,18 @@
+{
+  "vimMode": true,
+  "alwaysUpdateLinks": true,
+  "showLineNumber": true,
+  "tabSize": 2,
+  "smartIndentList": true,
+  "spellcheck": true,
+  "readableLineLength": true,
+  "strictLineBreaks": false,
+  "showFrontmatter": false,
+  "showIndentGuide": true,
+  "autoPairBrackets": true,
+  "autoPairMarkdown": true,
+  "useMarkdownLinks": true,
+  "newLinkFormat": "relative",
+  "attachmentFolderPath": "assets",
+  "propertiesInDocument": "visible"
+}

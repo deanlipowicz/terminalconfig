@@ -50,6 +50,14 @@ mkdir -p "$REPO_ROOT/config/btop/themes"
 cp ~/.config/btop/btop.conf "$REPO_ROOT/config/btop/btop.conf"
 cp ~/.config/btop/themes/catppuccin_mocha.theme "$REPO_ROOT/config/btop/themes/catppuccin_mocha.theme"
 
+echo "  • Obsidian vault"
+mkdir -p "$REPO_ROOT/config/obsidian/.obsidian/plugins"
+cp -a ~/Documents/ObsidianVault/.obsidian/appearance.json "$REPO_ROOT/config/obsidian/.obsidian/appearance.json"
+cp -a ~/Documents/ObsidianVault/.obsidian/app.json "$REPO_ROOT/config/obsidian/.obsidian/app.json"
+cp -a ~/Documents/ObsidianVault/.obsidian/core-plugins.json "$REPO_ROOT/config/obsidian/.obsidian/core-plugins.json"
+cp -a ~/Documents/ObsidianVault/.obsidian/community-plugins.json "$REPO_ROOT/config/obsidian/.obsidian/community-plugins.json"
+cp -a ~/Documents/ObsidianVault/.obsidian.vimrc "$REPO_ROOT/config/obsidian/.obsidian.vimrc"
+
 echo "  • .zshrc (→ .zshrc.tmpl)"
 cp ~/.zshrc "$REPO_ROOT/home/.zshrc.tmpl"
 

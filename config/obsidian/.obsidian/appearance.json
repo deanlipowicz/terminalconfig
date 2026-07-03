@@ -1,0 +1,13 @@
+{
+  "accentColor": "#89b4fa",
+  "cssTheme": "Catppuccin",
+  "theme": "obsidian",
+  "baseTheme": "monotone",
+  "interfaceFontFamily": "JetBrains Mono",
+  "textFontFamily": "JetBrains Mono",
+  "monospaceFontFamily": "JetBrains Mono",
+  "translucency": false,
+  "nativeMenus": false,
+  "showViewHeader": true,
+  "showRibbon": true
+}
