@@ -1,3 +1,10 @@
+# Template variables:
+#   CMDSTAN_HOME  path to CmdStan (default: $HOME/.cmdstan/cmdstan-2.39.0)
+#   HIP_VISIBLE_DEVICES  GPU devices for HIP (default: 0)
+#   HSA_OVERRIDE_GFX_VERSION  GFX version override (default: 11.0.0)
+#   HIP_FORCE_DEV_KERNARG  force kernel args (default: 1)
+#   OPENCODE_PATH  path to opencode binary dir (default: $HOME/.opencode/bin)
+
 # ──────────────────────────────────────────────
 #  ZSH Configuration — Oh My Zsh + Powerlevel10k
 # ──────────────────────────────────────────────
@@ -46,11 +53,11 @@ path=(
 # -------- Environment Variables --------
 export EDITOR="nvim"
 export VISUAL="nvim"
-export CMDSTAN_HOME="$HOME/.cmdstan/cmdstan-2.39.0"
+export CMDSTAN_HOME="{{CMDSTAN_HOME}}"
 export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git 2>/dev/null || find . -type f'
-export HIP_VISIBLE_DEVICES="0"
-export HSA_OVERRIDE_GFX_VERSION="11.0.0"
-export HIP_FORCE_DEV_KERNARG="1"
+export HIP_VISIBLE_DEVICES="{{HIP_VISIBLE_DEVICES}}"
+export HSA_OVERRIDE_GFX_VERSION="{{HSA_OVERRIDE_GFX_VERSION}}"
+export HIP_FORCE_DEV_KERNARG="{{HIP_FORCE_DEV_KERNARG}}"
 
 # -------- History Settings --------
 HISTSIZE=50000
@@ -192,4 +199,4 @@ alias tm='tmux new-session -A -s "$(basename "$(pwd)")" 2>/dev/null || tmux new-
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # opencode
-export PATH=/home/workstation/.opencode/bin:$PATH
+export PATH={{OPENCODE_PATH}}:$PATH
