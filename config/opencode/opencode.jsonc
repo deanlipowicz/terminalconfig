@@ -3,17 +3,17 @@
   "share": "disabled",
   "shell": "/usr/bin/zsh",
   "instructions": [
-    "{{OPENCODE_CONFIG_DIR}}/token-discipline.md",
-    "{{OPENCODE_CONFIG_DIR}}/stop-slop.md",
-    "{{OPENCODE_CONFIG_DIR}}/shell-policy.md",
-    "{{OPENCODE_CONFIG_DIR}}/rust-policy.md"
+    "/home/workstation/.config/opencode/token-discipline.md",
+    "/home/workstation/.config/opencode/stop-slop.md",
+    "/home/workstation/.config/opencode/shell-policy.md",
+    "/home/workstation/.config/opencode/rust-policy.md"
   ],
   "plugin": [
     "superpowers@git+https://github.com/obra/superpowers.git#v6.0.3"
   ],
   "references": {
     "terminal-apps": {
-      "path": "{{TERMINAL_APPLICATIONS_PATH}}",
+      "path": "/home/workstation/terminal-applications",
       "description": "Documented terminal applications, shell configuration, and workflows — eza, bat, fd, ripgrep, lazygit, tmux, zoxide, neovim, micro, duckdb, jq, yq, etc. Use for tool usage patterns and aliases."
     }
   },

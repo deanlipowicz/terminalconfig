@@ -1,7 +1,6 @@
 -- Custom options that override LazyVim defaults
 vim.g.maplocalleader = ","
--- Template variable: PYTHON_HOST_PROG  path to python3 for :python3 (default: /usr/bin/python3)
-vim.g.python3_host_prog = "{{PYTHON_HOST_PROG}}"
+vim.g.python3_host_prog = "/home/workstation/.local/venvs/quarto-jupyter/bin/python"
 
 local opt = vim.opt
 
