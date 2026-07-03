@@ -53,7 +53,7 @@ path=(
 # -------- Environment Variables --------
 export EDITOR="nvim"
 export VISUAL="nvim"
-export CMDSTAN_HOME="$HOME/.cmdstan/cmdstan-2.39.0"
+export CMDSTAN_HOME="{{CMDSTAN_HOME}}"
 export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git 2>/dev/null || find . -type f'
 export HIP_VISIBLE_DEVICES="{{HIP_VISIBLE_DEVICES}}"
 export HSA_OVERRIDE_GFX_VERSION="{{HSA_OVERRIDE_GFX_VERSION}}"
@@ -254,4 +254,4 @@ alias tm='tmux new-session -A -s "$(basename "$(pwd)")" 2>/dev/null || tmux new-
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # opencode
-export PATH={{OPENCODE_PATH}}:$PATH
+export PATH=/home/workstation/.opencode/bin:$PATH

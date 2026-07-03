@@ -12,6 +12,11 @@ echo ""
 echo "  • Ghostty";               cp ~/.config/ghostty/config "$REPO_ROOT/config/ghostty/config"
 echo "  • Harlequin";              cp ~/.config/harlequin/config.toml "$REPO_ROOT/config/harlequin/config.toml"
 
+echo "  • Micro"
+mkdir -p "$REPO_ROOT/config/micro/colorschemes"
+cp ~/.config/micro/settings.json "$REPO_ROOT/config/micro/settings.json"
+cp ~/.config/micro/colorschemes/catppuccin-mocha.micro "$REPO_ROOT/config/micro/colorschemes/catppuccin-mocha.micro"
+
 echo "  • Neovim (full tree)"
 rm -rf "$REPO_ROOT/config/nvim"
 cp -a ~/.config/nvim "$REPO_ROOT/config/nvim"
@@ -19,6 +24,7 @@ rm -rf "$REPO_ROOT/config/nvim/.git"
 
 echo "  • OpenCode"
 cp ~/.config/opencode/opencode.jsonc "$REPO_ROOT/config/opencode/opencode.jsonc"
+cp ~/.config/opencode/tui.json "$REPO_ROOT/config/opencode/tui.json"
 for f in token-discipline stop-slop shell-policy rust-policy; do
   cp "$HOME/.config/opencode/$f.md" "$REPO_ROOT/config/opencode/$f.md"
 done
@@ -42,11 +48,11 @@ echo "  • .p10k.zsh (→ .p10k.zsh.tmpl)"; cp ~/.p10k.zsh "$REPO_ROOT/home/.p1
 
 # .zshrc.tmpl
 sed -i \
-  -e "s|CMDSTAN_HOME=\"$HOME/\.cmdstan/cmdstan-2\.[0-9.]*\"|CMDSTAN_HOME=\"{{CMDSTAN_HOME}}\"|" \
+  -e "s|CMDSTAN_HOME=\"\$HOME/\.cmdstan/cmdstan-2\.[0-9.]*\"|CMDSTAN_HOME=\"{{CMDSTAN_HOME}}\"|" \
   -e "s|HIP_VISIBLE_DEVICES=\"[0-9]*\"|HIP_VISIBLE_DEVICES=\"{{HIP_VISIBLE_DEVICES}}\"|" \
   -e "s|HSA_OVERRIDE_GFX_VERSION=\"[0-9.]*\"|HSA_OVERRIDE_GFX_VERSION=\"{{HSA_OVERRIDE_GFX_VERSION}}\"|" \
   -e "s|HIP_FORCE_DEV_KERNARG=\"[0-9]*\"|HIP_FORCE_DEV_KERNARG=\"{{HIP_FORCE_DEV_KERNARG}}\"|" \
-  -e "s|$HOME/\.opencode/bin|{{OPENCODE_PATH}}|g" \
+  -e "s|\$HOME/\.opencode/bin|{{OPENCODE_PATH}}|g" \
   "$REPO_ROOT/home/.zshrc.tmpl" 2>/dev/null || true
 # Ensure template header exists
 if ! head -1 "$REPO_ROOT/home/.zshrc.tmpl" | grep -q "Template variables"; then

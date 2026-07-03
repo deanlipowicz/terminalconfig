@@ -1,0 +1,22 @@
+{
+    "autosu": false,
+    "clipboard": "terminal",
+    "colorscheme": "catppuccin-mocha",
+    "cursorline": true,
+    "eofnewline": true,
+    "ignorecase": true,
+    "indentchar": " ",
+    "matchbrace": true,
+    "mkparents": true,
+    "mouse": true,
+    "parsecursor": true,
+    "savecursor": true,
+    "saveundo": true,
+    "scrollbar": true,
+    "smartpaste": true,
+    "softwrap": true,
+    "statusformatl": "$(filename) $(modified)($(line),$(col)) | ft:$(opt:filetype) | lsp:$(mlsp.status)",
+    "syntax": true,
+    "tabsize": 2,
+    "tabstospaces": true
+}
